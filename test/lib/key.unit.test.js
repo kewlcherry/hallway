@@ -20,6 +20,14 @@ describe("Key", function() {
         done();
       });
     });
+    it("deletes", function(done) {
+      store.del("foo", function(err, val){
+        store.get("foo", function(err, val){
+          assert(!val);
+          done();
+        });
+      });
+    });
     it("fails", function(done) {
       store.get("bar", function(err, val){
         assert(err);
@@ -43,6 +51,14 @@ describe("Key", function() {
         assert.ifError(err);
         assert.equal("bar", val.toString());
         done();
+      });
+    });
+    it("deletes", function(done) {
+      store.del("foo", function(err, val){
+        store.get("foo", function(err, val){
+          assert(!val);
+          done();
+        });
       });
     });
     it("fails", function(done) {
