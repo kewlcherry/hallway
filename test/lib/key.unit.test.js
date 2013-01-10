@@ -18,7 +18,7 @@ describe("Key", function() {
         assert.ifError(err);
         assert.equal("bar", val.toString());
         done();
-      });
+      }, {buffer:true});
     });
     it("deletes", function(done) {
       store.del("foo", function(err, val){
@@ -32,6 +32,16 @@ describe("Key", function() {
       store.get("bar", function(err, val){
         assert(err);
         done();
+      });
+    });
+    it("handles JSON", function(done) {
+      store.set("joo", {"bar":true}, function(err){
+        assert.ifError(err);
+        store.get("joo", function(err, val){
+          assert.ifError(err);
+          assert.equal(true, val.bar);
+          done();
+        });
       });
     });
   });
@@ -51,7 +61,7 @@ describe("Key", function() {
         assert.ifError(err);
         assert.equal("bar", val.toString());
         done();
-      });
+      }, {buffer:true});
     });
     it("deletes", function(done) {
       store.del("foo", function(err, val){
@@ -65,6 +75,16 @@ describe("Key", function() {
       store.get("bar", function(err, val){
         assert(err);
         done();
+      });
+    });
+    it("handles JSON", function(done) {
+      store.set("joo", {"bar":true}, function(err){
+        assert.ifError(err);
+        store.get("joo", function(err, val){
+          assert.ifError(err);
+          assert.equal(true, val.bar);
+          done();
+        });
       });
     });
   });
