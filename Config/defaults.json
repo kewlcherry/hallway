@@ -6,6 +6,7 @@
   "externalHost": "localhost",
   "externalPort": 8042,
   "externalProtocol": "http://",
+  "dnsReapTime":300000,
   "ijod": {
     "slowPump": {
       "avg": 30,
@@ -43,6 +44,7 @@
     "pagingTiming": 2000,
     "defaultScanTime": 5000,
     "attempts": 8,
+    "heartbeat": 10000,
     "redis": {
       "host": "localhost",
       "port": 6379

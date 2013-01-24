@@ -10,7 +10,9 @@ program
   .usage('-s <synclet> -p <profile@service>')
   .option('-s, --synclet <synclet>', 'the synclet to test')
   .option('-p, --profile <profile@service>', 'the profile to test against')
+  .option('-e, --empty-config', 'start from an empty synclet config')
   .option('-v, --verbose', 'display the full JSON output')
+  .option('-a, --show-auth', 'display the full pi.auth output')
   .option('-c, --show-config <keys>', 'display these keys from pi.config', list)
   .parse(process.argv);
 
@@ -85,6 +87,12 @@ function runService(paginationPi, cb) {
       if (paginationPi) {
         pi = paginationPi;
         pi.config.nextRun = 0;
+      } else {
+        if (program.emptyConfig || !pi.config) {
+          pi.config = {};
+        }
+
+        logger.info('Starting config: %j', pi.config);
       }
 
       try {
@@ -110,6 +118,11 @@ function runService(paginationPi, cb) {
           }
 
           logger.info('%d %s/%s: %s', runs, service, synclet, returned);
+
+          if (program.showAuth) {
+            logger.info('%s/%s data.auth: %s', service, synclet,
+              JSON.stringify(data.auth, null, 2));
+          }
 
           if (program.showConfig && program.showConfig.length) {
             var filtered = {};

@@ -18,7 +18,7 @@ before(function (done) {
 
 describe('anubis', function () {
   describe('#log', function () {
-    this.timeout(60000);
+    this.timeout(1000);
 
     it('should log the request', function () {
       var req = {
@@ -35,8 +35,6 @@ describe('anubis', function () {
       anubis.log(req).should.equal(1);
     });
 
-    // XXX: This is a pretty hacky test; better would be to extend anubis to
-    // support proper testing.
     it('should reap the request', function (done) {
       var ran = false;
 
@@ -46,11 +44,13 @@ describe('anubis', function () {
         ran = true;
       });
 
+      anubis.reap();
+
       setTimeout(function () {
         ran.should.equal(true);
 
         done();
-      }, 15000);
+      }, 250);
     });
   });
 });

@@ -1,21 +1,32 @@
-var LIB_BLOCKLIST = [
-  /services/,
-  'lib/firebase-auth-server.js',
-  'lib/firebase-token-generator-node.js'
-];
+var _ = require('underscore');
+
+function filterFiles(grunt, pattern, blacklist) {
+  var files = grunt.file.expand(pattern);
+  return _.reject(files, function (file) {
+    return _.any(blacklist, function (ignored) {
+      return file === ignored || file.match(ignored);
+    });
+  });
+}
+
+function testFiles(grunt) {
+  return filterFiles(grunt, 'test/**/*.js', [
+    'test/fixtures/synclets/twitter/related.js'
+  ]);
+}
 
 function libFiles(grunt) {
-  var filesToLint = [];
-  grunt.file.expand(
-    'lib/**/*.js'
-  ).forEach(function (file) {
-    var blocked = false;
-    LIB_BLOCKLIST.forEach(function (blocker) {
-      if (file === blocker || file.match(blocker)) blocked = true;
-    });
-    if (!blocked) filesToLint.push(file);
-  });
-  return filesToLint;
+  return filterFiles(grunt, 'lib/**/*.js', [
+    /services/,
+    'lib/firebase-auth-server.js',
+    'lib/firebase-token-generator-node.js'
+  ]);
+}
+
+function serviceFiles(grunt) {
+  return filterFiles(grunt, 'lib/services/**/*.js', [
+    'lib/services/gmail/imap/xregexp.js'
+  ]);
 }
 
 module.exports = function (grunt) {
@@ -35,8 +46,8 @@ module.exports = function (grunt) {
     lint: {
       grunt    : 'grunt.js',
       lib      : libFiles(grunt),
-      services : 'lib/services/**/*.js',
-      tests    : 'test/**/*.js',
+      services : serviceFiles(grunt),
+      tests    : testFiles(grunt),
       scripts  : 'scripts/**/*.js'
     },
     watch: {
@@ -46,17 +57,18 @@ module.exports = function (grunt) {
     jshint: {
       options: {
         curly: false,
-        strict: false,
-        eqeqeq: true,
-        immed: true,
         latedef: false,
+        strict: false,
+
+        boss: true,
+        eqeqeq: true,
+        eqnull: true,
+        immed: true,
         newcap: true,
         noarg: true,
+        node: true,
         sub: true,
-        undef: true,
-        boss: true,
-        eqnull: true,
-        node: true
+        undef: true
       },
       globals: {
         exports: true,
@@ -64,14 +76,6 @@ module.exports = function (grunt) {
         module: true,
         process: true,
         require: true,
-
-        $: true,
-        _: true,
-        async: true,
-        moment: true,
-        google: true,
-        request: true,
-        sprintf: true,
 
         __dirname: true,
 
@@ -85,8 +89,6 @@ module.exports = function (grunt) {
 
         setInterval: true,
         clearInterval: true,
-
-        should: true,
 
         it: true,
         xit: true,
