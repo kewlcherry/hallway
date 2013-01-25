@@ -221,6 +221,15 @@ if (role !== Roles.stream) {
   });
   startupTasks.push(require('ijod').initDB);
   startupTasks.push(require('tokenz').init);
+  startupTasks.push(function(cb){
+    require('key').store(lconfig.taskman.store.type, lconfig.taskman.store, function(err, store){
+      if (err) {
+        logger.error("Initialization of keyvalue storage failed: "+err);
+        process.exit(1);
+      }
+      require('taskStore').init({store:store}, cb);
+    });
+  });
   startupTasks.push(startTaskman);
 }
 
