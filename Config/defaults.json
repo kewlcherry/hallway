@@ -49,7 +49,7 @@
     "attempts": 8,
     "heartbeat": 10000,
     "store": {
-      "type": "riak"
+      "type": "riak",
       "servers": ["localhost:8098"]
     },
     "redis": {
