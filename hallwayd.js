@@ -20,6 +20,7 @@ var logger = require('logger').logger('hallwayd');
 
 logger.info('process id:' + process.pid);
 
+var servezas = require('servezas');
 var taskman = require('taskman');
 var taskmaster = require('taskmaster');
 
@@ -93,6 +94,13 @@ function startWorkerSup(cbDone) {
   lconfig.worker.workerId = process.env.WORKER || require("os").hostname();
   lconfig.worker.moduleName = "hallwayd.js";
   lconfig.worker.spawnArgs = ["workerchild"];
+
+  servezas.load();
+
+  // Monitor all services if unspecified
+  if (!lconfig.worker.services || lconfig.worker.services.length === 0) {
+    lconfig.worker.services = servezas.serviceList();
+  }
 
   // Use pcronInsta.set_master to ensure we're not running gc_work/notify too
   // often/heavily. We use a 10 second interval for simplicity; this means that
